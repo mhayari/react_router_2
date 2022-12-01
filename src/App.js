@@ -1,18 +1,27 @@
+import { Routes,Route } from 'react-router-dom'
 import './App.css'
 import { useState } from "react"
-import MovieList from './MovieList'
 import AddMovie from './AddMovie'
-import FilterMovie from './FilterMovie'
+import Navbar from './component/Navbar'
+import Home from './component/Home'
+import About from './component/About'
+import Contact from './component/Contact'
+import Watch from './component/Watch'
+
+
 
 const App = () => {
 
-  const [films, setFilms] = useState([{title: 'one', description: 'new', posterUrl: '/images/1.jpeg', rating: '1'}])
+  const [films, setFilms] = useState([])
   
-  const [newFilms, setNewFilms] = useState({ title: '', description: '', posterUrl: '', rating: '' })
+  const [newFilms, setNewFilms] = useState({id:0, title: '', description: '', posterUrl: '', rating: '' })
   const[filterMov,setFilterMov]=useState({title:'',rating:''})
+  
+ 
 
   const handelChange = (el) => {
-    const newMov = { ...newFilms, [el.target.name]: el.target.value }
+    const id=films.length?films[films.length-1].id+1:1
+    const newMov = { ...newFilms,id:id, [el.target.name]: el.target.value }
     setNewFilms(newMov)
   }
 
@@ -28,7 +37,7 @@ const App = () => {
   
   const handelSubmit = () => {
     addMov()
-    setNewFilms({ title: '', description: '', posterUrl: '', rating: '' })
+    setNewFilms({id:0, title: '', description: '', posterUrl: '', rating: '' })
     setFilterMov({title: '', rating: ''})
 
   }
@@ -36,10 +45,18 @@ const App = () => {
   
   return (
     <div className='App'>
-      <FilterMovie filterMov={filterMov} setFilterMov={setFilterMov} handelFilterChange={handelFilterChange}   />
-      <AddMovie handelChange={handelChange} handelSubmit={handelSubmit}
-        newFilms={newFilms} />
-      <MovieList films={films.filter(film=>((film.title).toLowerCase()).includes((filterMov.title).toLowerCase())&&(film.rating.includes(filterMov.rating)))}/>
+      <Navbar filterMov={filterMov} setFilterMov={setFilterMov} handelFilterChange={handelFilterChange} />
+      <div className='container'>
+      <Routes>
+        <Route path='/' element={<Home filterMov={filterMov} setFilterMov={setFilterMov} handelFilterChange={handelFilterChange} 
+         films={films}  />}/>
+         <Route path='/watch' element={<Watch/>}/>
+        <Route path='/addmovie' element={<AddMovie handelChange={handelChange} handelSubmit={handelSubmit}
+        newFilms={newFilms} />}/>
+        <Route path='/about' element={<About/>}/>
+        <Route path='/contact' element={<Contact/>}/>
+      </Routes>
+      </div>
     </div>
   )
 }
