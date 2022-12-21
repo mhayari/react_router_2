@@ -30,7 +30,9 @@ const Home = () => {
             <input  placeholder="description" type='text' name='description' defaultValue={update.description} onChange={(e)=>setUpdate({ ...update, [e.target.name]: e.target.value })} /><br />
             <input  placeholder="Url" type='text' name='posterUrl' defaultValue={update.posterUrl} onChange={(e)=>setUpdate({ ...update, [e.target.name]: e.target.value })} /><br />
             <input placeholder="rating" type='text' name='rating' defaultValue={update.rating}  onChange={(e)=>setUpdate({ ...update, [e.target.name]: e.target.value })} /><br />
-            <button onClick={()=>Dispatch(updated(update))}>edit</button>
+            <button onClick={()=>{Dispatch(updated(update))
+            setUpdate({id:0,title: '', description: '', posterUrl: '', rating: '' })
+            setIsEdit(false)}}>edit</button>
               
               </>
               )}
