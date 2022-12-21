@@ -7,49 +7,58 @@ import Home from './component/Home'
 import About from './component/About'
 import Contact from './component/Contact'
 import Watch from './component/Watch'
+import { BrowserRouter } from 'react-router-dom';
+import { useDispatch } from 'react-redux'
+import { filterFilm } from './redux/reducer'
+import {add} from './redux/reducer'
+import { useSelector } from 'react-redux'
+import axios from 'axios'
 
 
 
 const App = () => {
+  const id=useSelector(state=>state.MovieRedux.list.id)
 
-  const [films, setFilms] = useState([])
+
+  const Dispatch=useDispatch()
   
-  const [newFilms, setNewFilms] = useState({id:0, title: '', description: '', posterUrl: '', rating: '' })
+  const [newFilms, setNewFilms] = useState({id:0,title: '', description: '', posterUrl: '', rating: '' })
   const[filterMov,setFilterMov]=useState({title:'',rating:''})
-  
- 
 
   const handelChange = (el) => {
-    const id=films.length?films[films.length-1].id+1:1
-    const newMov = { ...newFilms,id:id, [el.target.name]: el.target.value }
+    const newMov = { ...newFilms,id:id,[el.target.name]: el.target.value }
     setNewFilms(newMov)
   }
 
   const handelFilterChange = (e) => {
     const newFilter = { ...filterMov, [e.target.name]: e.target.value }
-    setFilterMov(newFilter)
+    // setFilterMov(newFilter)
+    
+    Dispatch(filterFilm(newFilter))
   }
-  const addMov=()=>{
-    const listMov = [...films,newFilms]
-    setFilms(listMov)
-  }
+ 
   
   
   const handelSubmit = () => {
-    addMov()
-    setNewFilms({id:0, title: '', description: '', posterUrl: '', rating: '' })
-    setFilterMov({title: '', rating: ''})
+    if(!newFilms)return
+      Dispatch(add(newFilms))
+      console.log(newFilms.id)
+      setNewFilms({id:0, title: '', description: '', posterUrl: '', rating: '' })
+      setFilterMov({title: '', rating: ''})
+    
+    }
 
-  }
+
   
   
   return (
+    <BrowserRouter>
+
     <div className='App'>
-      <Navbar filterMov={filterMov} setFilterMov={setFilterMov} handelFilterChange={handelFilterChange} />
+      <Navbar filterMov={filterMov} setFilterMov={setFilterMov} handelFilterChange={handelFilterChange}  />
       <div className='container'>
       <Routes>
-        <Route path='/' element={<Home filterMov={filterMov} setFilterMov={setFilterMov} handelFilterChange={handelFilterChange} 
-         films={films}  />}/>
+        <Route path='/' element={<Home  />}/>
          <Route path='/watch' element={<Watch/>}/>
         <Route path='/addmovie' element={<AddMovie handelChange={handelChange} handelSubmit={handelSubmit}
         newFilms={newFilms} />}/>
@@ -58,6 +67,8 @@ const App = () => {
       </Routes>
       </div>
     </div>
+    </BrowserRouter>
+
   )
 }
 
